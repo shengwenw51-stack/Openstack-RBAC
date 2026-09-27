@@ -15,3 +15,9 @@ export OS_PROJECT_DOMAIN_NAME=Default
 
 openstack token issue
 ```
+
+## Policy test
+```
+pip3 install oslo.policy
+python3 test_policy_lease.py
+```
