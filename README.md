@@ -2,6 +2,9 @@
 
 ## Test
 ```
+python3 -m venv openstack-venv
+source openstack-venv/bin/activate
+
 # 使用 pip 在 Mac 安裝輕量 CLI
 pip3 install python-openstackclient
 
