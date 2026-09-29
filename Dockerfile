@@ -25,8 +25,8 @@ RUN keystone-manage fernet_setup --keystone-user root --keystone-group root && \
       --bootstrap-public-url http://localhost:5000/v3/ \
       --bootstrap-region-id RegionOne
 
-# 3. 生成正統的 Keystone Flask WSGI 啟動檔
-RUN python3 -c "open('/etc/keystone/wsgi.py', 'w').write('from keystone.server.flask.public import initialize_application\napplication = initialize_application()\n')"
+# 3. 正確清理 sys.argv 並從 keystone.server.wsgi 初始化應用程式
+RUN python3 -c "open('/etc/keystone/wsgi.py', 'w').write('import sys\nsys.argv = sys.argv[:1]\nfrom keystone.server.wsgi import initialize_public_application\napplication = initialize_public_application()\n')"
 
 EXPOSE 5000
 
