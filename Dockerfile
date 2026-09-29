@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
 # 安裝 Keystone、Gunicorn 與 OpenStack CLI
 RUN pip install --no-cache-dir keystone python-openstackclient gunicorn
 
-# 1. 建立設定檔目錄並配置 SQLite 與 Policy
+# 1. 建立設定檔目錄並配置 SQLite 與 Policy (關閉 strict scope 以放寬權限)
 RUN mkdir -p /etc/keystone && \
     echo '[DEFAULT]' > /etc/keystone/keystone.conf && \
     echo '[oslo_policy]' >> /etc/keystone/keystone.conf && \
@@ -16,7 +16,7 @@ RUN mkdir -p /etc/keystone && \
     echo '[database]' >> /etc/keystone/keystone.conf && \
     echo 'connection = sqlite:////etc/keystone/keystone.db' >> /etc/keystone/keystone.conf
 
-# 2. 初始化 Fernet Token 金鑰、資料庫與完整 Domain/Project Admin 帳密 bootstrap
+# 2. 初始化 Fernet Token 金鑰、資料庫與 Bootstrap
 RUN keystone-manage fernet_setup --keystone-user root --keystone-group root && \
     keystone-manage credential_setup --keystone-user root --keystone-group root && \
     keystone-manage db_sync && \
@@ -25,10 +25,9 @@ RUN keystone-manage fernet_setup --keystone-user root --keystone-group root && \
       --bootstrap-username admin \
       --bootstrap-project-name admin \
       --bootstrap-role-name admin \
-      --bootstrap-domain-id Default \
-      --bootstrap-admin-url http://localhost:5000/v3/ \
-      --bootstrap-internal-url http://localhost:5000/v3/ \
-      --bootstrap-public-url http://localhost:5000/v3/ \
+      --bootstrap-admin-url http://localhost:5001/v3/ \
+      --bootstrap-internal-url http://localhost:5001/v3/ \
+      --bootstrap-public-url http://localhost:5001/v3/ \
       --bootstrap-region-id RegionOne
 
 # 3. 建立 WSGI 啟動腳本 (包含 sys.argv 清理)
