@@ -12,7 +12,7 @@ openstack user create alice --domain Domain1 --password secret
 openstack role add --project Project_DB --project-domain Domain1 --user alice --user-domain Domain1 member
 
 # 5. 驗證情境 A：Alice 成功取得 Project_DB 的 Token
-openstack --os-auth-url http://localhost:5000/v3 \
+openstack --os-auth-url http://localhost:5001/v3 \
           --os-username alice \
           --os-password secret \
           --os-user-domain-name Domain1 \
@@ -21,7 +21,7 @@ openstack --os-auth-url http://localhost:5000/v3 \
           token issue
 
 # 6. 驗證情境 B：Alice 嘗試越界取得 Project_k8s 的 Token (應被拒絕)
-openstack --os-auth-url http://localhost:5000/v3 \
+openstack --os-auth-url http://localhost:5001/v3 \
           --os-username alice \
           --os-password secret \
           --os-user-domain-name Domain1 \
