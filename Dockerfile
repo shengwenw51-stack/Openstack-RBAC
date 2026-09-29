@@ -25,10 +25,10 @@ RUN keystone-manage fernet_setup --keystone-user root --keystone-group root && \
       --bootstrap-public-url http://localhost:5000/v3/ \
       --bootstrap-region-id RegionOne
 
-# 3. 自動寫入正統的 Keystone Flask WSGI 啟動檔
-RUN python3 -c "from keystone.server.flask import application; open('/etc/keystone/wsgi.py', 'w').write('application = application.initialize_public_application()\n')"
+# 3. 生成正統的 Keystone Flask WSGI 啟動檔
+RUN python3 -c "open('/etc/keystone/wsgi.py', 'w').write('from keystone.server.flask.public import initialize_application\napplication = initialize_application()\n')"
 
 EXPOSE 5000
 
-# 讓 gunicorn 直接載入生成好的 /etc/keystone/wsgi.py 檔
+# 讓 gunicorn 直接載入 /etc/keystone/wsgi.py 的 application
 CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--chdir", "/etc/keystone", "wsgi:application"]
